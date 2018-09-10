@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="js/three.min.js"></script>
+    <style>
+        canvas {
+            width: 100%;
+            height: 100%
+        }
+    </style>
+</head>
+
+<body>
+    <script>
+        var scene = new THREE.Scene(); //场景
+        //THREE.PerspectiveCamera(fov, aspect, near, far) 
+        //- fov 可视角度 
+　      //- aspect 实际窗口的纵横比 
+　　　   //- near 近处的裁面的距离
+　　　   //- far 远处的裁面的距离 
+        var camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000) // 透视相机
+        var renderer = new THREE.WebGLRenderer(); // 渲染器
+        renderer.setSize(window.innerWidth, window.innerHeight); //设置渲染器的大小为窗口的内宽度，也就是内容区的宽度
+
+        document.body.appendChild(renderer.domElement);
+        var geometry = new THREE.CubeGeometry(1, 1, 1); //创建几何对象(立方体)
+        //CubeGeometry原型函数
+        //CubeGeometry(width, height, depth, segmentsWidth, segmentsHeight, segmentsDepth, materials, sides)
+        //CubeGeometry(x长度,y轴长度,z轴深度也就是长度))
+        var meterial = new THREE.MeshBasicMaterial({ color: 0x000000 }) // 创建材质
+        var cube = new THREE.Mesh(geometry, meterial);//为立体体渲染材质与空间位置
+        scene.add(cube); //将立方体置于场景中
+        camera.position.z = 5; // 相机z轴高度
+
+        function render() {
+            requestAnimationFrame(render);
+            cube.rotation.x += 0.1; // 立方体x轴旋转每次加0.1
+            cube.rotation.y += 0.1; // 立方体y轴旋转每次加0.1
+            //渲染应该使用渲染器，结合相机和场景来得到结果画面。实现这个功能的函数是
+            //renderer.render(scene, camera);
+            //渲染函数的原型如下：
+            //render( scene, camera, renderTarget, forceClear )
+            renderer.render(scene, camera);
+        }
+
+
+            //渲染有两种方式：实时渲染和离线渲染 。
+
+            //先看看离线渲染，想想《西游降魔篇》中最后的佛主，他肯定不是真的，是电脑渲染出来的，
+            //其画面质量是很高的，它是事先渲染好一帧一帧的图片，然后再把图片拼接成电影的。这就是离线渲染。
+            //如果不事先处理好一帧一帧的图片，那么电影播放得会很卡。
+            //CPU和GPU根本没有能力在播放的时候渲染出这种高质量的图片。
+
+            //实时渲染：就是需要不停的对画面进行渲染，即使画面中什么也没有改变，也需要重新渲染。
+            //下面就是一个渲染循环：
+
+        render();
+
+
+    </script>
+
+</body>
+
+</html>

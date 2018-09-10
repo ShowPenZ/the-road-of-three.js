@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>move</title>
+    <script src="js/three.min.js"></script>
+    <script src="js/stats.js"></script>
+    <script src="js/tween.js"></script>
+
+    <style type="text/css">
+        div#canvas-frame {
+            border: none;
+            cursor: pointer;
+            width: 100%;
+            height: 800px;
+            background-color: #EEEEEE;
+        }
+    </style>
+</head>
+<script>
+
+    //初始化渲染器
+    var renderer;
+    var stats;
+    function initThree() {
+        width = document.getElementById('canvas-frame').clientWidth;
+        height = document.getElementById('canvas-frame').clientHeight;
+        //相机距离网格越近看到的细节就越多，锯齿感也就越来越严重。相片放得的越大会发现越不清晰，
+        //锯齿也就越多，也是这个道理。antialias:true可以弱化锯齿就像PS中的羽化效果一样。
+        renderer = new THREE.WebGLRenderer({
+            antialias: true
+        })
+        renderer.setSize(width, height);
+        document.getElementById('canvas-frame').appendChild(renderer.domElement);
+        renderer.setClearColor(0x000000, 1.0);
+
+        //性能监测
+        stats = new Stats();
+        stats.domElement.style.position = 'absolute';
+        stats.domElement.style.left = '10px';
+        stats.domElement.style.top = '10px';
+        document.getElementById('canvas-frame').appendChild(stats.domElement);
+    }
+
+    //初始化相机
+    var camera;
+    //camera.position 相机自身的位置
+    //camera.up 相机以哪个方向为上方
+    //camera.lookAt 相机看向哪个坐标轴
+    function initCamera() {
+        camera = new THREE.PerspectiveCamera(45, width / height, 1, 10000);
+        camera.position.x = 0;
+        camera.position.y = 0;
+        camera.position.z = 2000;
+        camera.up.x = 0;
+        camera.up.y = 1;
+        camera.up.z = 0;
+        camera.lookAt({
+            x: 0,
+            y: 0,
+            z: 0
+        });
+    }
+
+    var scene;
+    function initScene() {
+        scene = new THREE.Scene();
+    }
+
+
+    var light;
+    function initLight() {
+        light = new THREE.AmbientLight(0xFFFFFF);
+        light.position.set(100, 100, 200);
+        scene.add(light);
+
+        light = new THREE.PointLight(0x00FF00);
+        light.position.set(0, 0, 300);
+        scene.add(light);
+
+    }
+
+    var cube;
+    var mesh;
+    //Vector3 向量（x,y,z）
+    //vertices 顶点
+    function initObject() {
+        var geometry = new THREE.CylinderGeometry(100, 150, 400);
+        var material = new THREE.MeshLambertMaterial({ color: 0xFFFF00 });
+        mesh = new THREE.Mesh(geometry, material);
+        mesh.position = new THREE.Vector3(0, 0, 0);
+        scene.add(mesh);
+    }
+
+    // function render() {
+    //     renderer.clear();
+    //     renderer.render(scene, camera);
+    //     requestAnimationFrame(render);
+    // }
+
+    function threeStart() {
+        initThree();
+        initCamera();
+        initScene();
+        initLight();
+        initObject();
+        animation();
+        initTween();
+    }
+
+    function initTween() {
+        //to函数，接受两个参数，第一个参数是一个集合，
+        //里面存放的键值对，键x表示mesh.position的x属性，
+        //值-400表示，动画结束的时候需要移动到的位置。
+        //第二个参数，是完成动画需要的时间，这里是3000ms。
+
+        //缓动功能 TWEEN.Easing.Quadratic.In 先慢后快
+
+        new TWEEN.Tween(mesh.position)
+            .to({ x: -1000 }, 3000).repeat(Infinity).start();
+    }
+
+    function animation() {
+        mesh.position.x -= 1;
+        renderer.render(scene, camera);
+        requestAnimationFrame(animation);
+        stats.update();
+        TWEEN.update(); //需要在渲染函数中去不断的更新Tween，这样才能够让mesh.position.x移动位置:
+    }
+</script>
+
+<body onload="threeStart();">
+    <div id='canvas-frame'></div>
+</body>
+
+</html>

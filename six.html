@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>move</title>
+    <script src="js/three.min.js"></script>
+    <script src="js/stats.js"></script>
+    <script src="js/tween.js"></script>
+
+    <style type="text/css">
+        div#canvas-frame {
+            border: none;
+            cursor: pointer;
+            width: 100%;
+            height: 800px;
+            background-color: #EEEEEE;
+        }
+    </style>
+</head>
+<script>
+
+    // //初始化渲染器
+    // var renderer;
+    // var stats;
+    // function initThree() {
+    //     width = document.getElementById('canvas-frame').clientWidth;
+    //     height = document.getElementById('canvas-frame').clientHeight;
+    //     //相机距离网格越近看到的细节就越多，锯齿感也就越来越严重。相片放得的越大会发现越不清晰，
+    //     //锯齿也就越多，也是这个道理。antialias:true可以弱化锯齿就像PS中的羽化效果一样。
+    //     renderer = new THREE.WebGLRenderer({
+    //         antialias: true
+    //     })
+    //     renderer.setSize(width, height);
+    //     document.getElementById('canvas-frame').appendChild(renderer.domElement);
+    //     renderer.setClearColor(0xFFFFFF, 1.0);
+
+    //     //性能监测
+    //     stats = new Stats();
+    //     stats.domElement.style.position = 'absolute';
+    //     stats.domElement.style.left = '10px';
+    //     stats.domElement.style.top = '10px';
+    //     document.getElementById('canvas-frame').appendChild(stats.domElement);
+    // }
+
+    // //初始化相机
+    // var camera;
+    // //camera.position 相机自身的位置
+    // //camera.up 相机以哪个方向为上方
+    // //camera.lookAt 相机看向哪个坐标轴
+    // function initCamera() {
+    //     camera = new THREE.PerspectiveCamera(45, width / height, 1, 10000);
+    //     camera.position.x = 600;
+    //     camera.position.y = 0;
+    //     camera.position.z = 600;
+    //     camera.up.x = 0;
+    //     camera.up.y = 1;
+    //     camera.up.z = 0;
+    //     camera.lookAt({
+    //         x: 0,
+    //         y: 0,
+    //         z: 0
+    //     });
+    // }
+
+    // var scene;
+    // function initScene() {
+    //     scene = new THREE.Scene();
+    // }
+
+
+    // var light;
+    // function initLight() {
+    //     light = new THREE.AmbientLight(0xFF0000);
+    //     light.position.set(100, 100, 200);
+    //     scene.add(light);
+
+    //     light = new THREE.DirectionalLight(0xFF0000);
+    //     light.position.set(0, 0, 1);
+    //     scene.add(light);
+
+    // }
+
+    // var cube;
+
+    // //Vector3 向量（x,y,z）
+    // //vertices 顶点
+    // function initObject() {
+    //     var geometry = new THREE.CubeGeometry(200, 100, 50, 4, 4);
+    //     var material = new THREE.MeshLambertMaterial({ color: 0xFFFFFF });
+    //     var mesh = new THREE.Mesh(geometry, material);
+    //     mesh.position.set(0, 0, 0);
+    //     scene.add(mesh);
+
+    //     var geometry2 = new THREE.CubeGeometry(200, 100, 50, 4, 4);
+    //     var material2 = new THREE.MeshLambertMaterial({ color: 0xFFFFFF });
+    //     var mesh2 = new THREE.Mesh(geometry2, material2);
+    //     mesh2.position.set(-300, 0, 0);
+    //     scene.add(mesh2);
+
+    //     var geometry3 = new THREE.CubeGeometry(200, 100, 50, 4, 4);
+    //     var material3 = new THREE.MeshLambertMaterial({ color: 0xFFFFFF });
+    //     var mesh3 = new THREE.Mesh(geometry3, material3);
+    //     mesh3.position.set(0, -150, 0);
+    //     scene.add(mesh3);
+
+    //     var mesh4 = new THREE.Mesh(geometry3, material3);
+    //     mesh4.position.set(0, 150, 0);
+    //     scene.add(mesh4);
+
+    //     var mesh5 = new THREE.Mesh(geometry3, material3);
+    //     mesh5.position.set(300, 0, 0);
+    //     scene.add(mesh5);
+
+    //     var mesh6 = new THREE.Mesh(geometry3, material3);
+    //     mesh6.position.set(0, 0, -100);
+    //     scene.add(mesh6);
+
+    // }
+
+    // // function render() {
+    // //     renderer.clear();
+    // //     renderer.render(scene, camera);
+    // //     requestAnimationFrame(render);
+    // // }
+
+    // function threeStart() {
+    //     initThree();
+    //     initCamera();
+    //     initScene();
+    //     initLight();
+    //     initObject();
+    //     renderer.clear();
+    //     renderer.render(scene, camera);
+    // }
+
+
+    var renderer;
+    function initThree() {
+        width = document.getElementById('canvas-frame').clientWidth;
+        height = document.getElementById('canvas-frame').clientHeight;
+        renderer = new THREE.WebGLRenderer({
+            antialias: true
+        });
+        renderer.setSize(width, height);
+        document.getElementById('canvas-frame').appendChild(renderer.domElement);
+        renderer.setClearColorHex(0xFFFFFF, 1.0);
+    }
+
+    var camera;
+    function initCamera() {
+        camera = new THREE.PerspectiveCamera(45, width / height, 1, 10000);
+        camera.position.x = 600;
+        camera.position.y = 0;
+        camera.position.z = 600;
+        camera.up.x = 0;
+        camera.up.y = 1;
+        camera.up.z = 0;
+        camera.lookAt({
+            x: 0,
+            y: 0,
+            z: 0
+        });
+    }
+
+    var scene;
+    function initScene() {
+        scene = new THREE.Scene();
+    }
+
+    var light;
+    function initLight() {
+
+
+
+
+        //AmbientLight 环境光
+        //因此，当你仅为场景指定环境光时，所有的物体无论法向量如何，
+        //都将表现为同样的明暗程度。 （这是因为，反射光可以从各个方向进入您的眼睛）
+        //设置了这这种效果后 光线是什么颜色的物体就是什么颜色的 
+        // light = new THREE.AmbientLight(0x00FF00);
+        // light.position.set(100, 100, 200);
+        // scene.add(light);
+
+        // 平行光
+        //平行光又称为方向光（Directional Light），
+        //是一组没有衰减的平行的光线，类似太阳光的效果。
+        light = new THREE.DirectionalLight(0xFF0000);
+        light.position.set(0, 0, 1);
+        scene.add(light);
+
+
+
+        //1.首先方向光，是如图箭头的方向着色到物体的。而环境光由于与位置没有关系，
+        //方向又是任何方向都可以照射的，所以我们不管光的方向。
+
+        //2、图中绿色的部分，是由环境光造成的。由于方向光根本照射不到绿色的部分，
+        //所以，这部分只有环境光对其影响。
+
+        //3、图中黄色的部分是由环境光和方向光共同作用而成的，其实是两种光源颜色的简单相加，
+        //0x00FF00 + 0xFF0000 = 0xFFFF00，oxFFFF00 就是黄色。
+    }
+
+    // A start 
+    var cube;
+    function initObject() {
+        var geometry = new THREE.CubeGeometry(200, 100, 50, 4, 4);
+        var material = new THREE.MeshLambertMaterial({ color: 0xFFFFFF });
+        var mesh = new THREE.Mesh(geometry, material);
+        mesh.position.set(0, 0, 0);
+        scene.add(mesh);
+
+        var geometry2 = new THREE.CubeGeometry(200, 100, 50, 4, 4);
+        var material2 = new THREE.MeshLambertMaterial({ color: 0xFFFFFF });
+        var mesh2 = new THREE.Mesh(geometry2, material2);
+        mesh2.position.set(-300, 0, 0);
+        scene.add(mesh2);
+
+        var geometry3 = new THREE.CubeGeometry(200, 100, 50, 4, 4);
+        var material3 = new THREE.MeshLambertMaterial({ color: 0xFFFFFF });
+        var mesh3 = new THREE.Mesh(geometry3, material3);
+        mesh3.position.set(0, -150, 0);
+        scene.add(mesh3);
+
+        var mesh4 = new THREE.Mesh(geometry3, material3);
+        mesh4.position.set(0, 150, 0);
+        scene.add(mesh4);
+
+        var mesh5 = new THREE.Mesh(geometry3, material3);
+        mesh5.position.set(300, 0, 0);
+        scene.add(mesh5);
+
+        var mesh6 = new THREE.Mesh(geometry3, material3);
+        mesh6.position.set(0, 0, -100);
+        scene.add(mesh6);
+
+    }
+    // A end
+
+    function threeStart() {
+        initThree();
+        initCamera();
+        initScene();
+        initLight();
+        initObject();
+        renderer.clear();
+        renderer.render(scene, camera);
+    }
+
+
+</script>
+
+<body onload="threeStart();">
+    <div id='canvas-frame'></div>
+</body>
+
+</html>
